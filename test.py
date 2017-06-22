@@ -1,5 +1,7 @@
 import blockchain
 
+print 'Mining at difficulty %s:%s' % (blockchain.DIFFICULTY_ORDER,blockchain.DIFFICULTY)
+
 chain = [blockchain.mine_block(None, 'genesis')]
 for i in range(1,1000):
     b = blockchain.mine_block(chain[i-1], 'block'+str(i))

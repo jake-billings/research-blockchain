@@ -1,15 +1,17 @@
 import hashlib
-import binascii
 import os
 import math
+
+from encode import encode, decode
 
 HASH_ALGORITHM = 'sha512'
 HASHER = hashlib.new(HASH_ALGORITHM)
 
 NONCE_SIZE = 8
 
-DIFFICULTY_ORDER = 4
-DIFFICULTY = math.pow(16, DIFFICULTY_ORDER)
+DIFFICULTY_ORDER = 2
+ENCODING_ORDER = 64
+DIFFICULTY = math.pow(64, DIFFICULTY_ORDER)
 
 
 class Block:
@@ -41,21 +43,21 @@ class Block:
     def get_hash(self):
         return self.hash
 
-    def get_hash_ascii(self):
-        return binascii.hexlify(self.get_hash())
+    def get_hash_encoded(self):
+        return encode(self.get_hash())
 
     def get_height(self):
         return self.height
 
     def get_string(self):
-        return 'data %s,\theight %s,\thash %s' % (self.get_data(), self.get_height(), self.get_hash_ascii())
+        return 'data %s,\theight %s,\thash %s' % (self.get_data(), self.get_height(), self.get_hash_encoded())
 
 
 def mine_block(previous, data, difficulty_phrase='0'):
 
     while True:
         b = Block(previous, data, os.urandom(NONCE_SIZE))
-        hash = b.get_hash_ascii()
+        hash = b.get_hash_encoded()
 
         valid = True
         for i in range(0, DIFFICULTY_ORDER):
