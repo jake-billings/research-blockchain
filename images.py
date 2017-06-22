@@ -25,12 +25,7 @@ def entropy(signal):
 
 
 # https://www.hdm-stuttgart.de/~maucher/Python/MMCodecs/html/basicFunctions.html
-def entropy_matrix(colorIm):
-    greyIm = colorIm.convert('L')
-    colorIm = np.array(colorIm)
-    greyIm = np.array(greyIm)
-
-    N = 5
+def entropy_matrix(greyIm, N = 3):
     S = greyIm.shape
     E = np.array(greyIm)
     for row in range(S[0]):
@@ -45,22 +40,28 @@ def entropy_matrix(colorIm):
     return E
 
 
-def image_entropy(image):
-    return np.mean(entropy_matrix(image))
+def entropy_matrix_image(colorIm):
+    greyIm = colorIm.convert('L')
+    colorIm = np.array(colorIm)
+    greyIm = np.array(greyIm)
+
+    return entropy_matrix(greyIm)
 
 
 def complexity_score(ha):
-    return image_entropy(ha.filter(ImageFilter.BLUR))
+    return np.sum(entropy_matrix(entropy_matrix_image(
+        ha
+    )))
 
 
-def is_interesting(image, top_threshold=4.9, bottom_threshold=4, width=80, height=80):
-        image.thumbnail((width, height))
+def is_interesting(image, bottom_threshold=500, width=80, height=80):
+        image.resize((width, height), Image.ANTIALIAS)
         score = complexity_score(image)
 
-        return bottom_threshold < score < top_threshold
+        return bottom_threshold < score
 
 
-def process_image_set(filenames, images, type, top_threshold=4.9, bottom_threshold=4):
+def process_image_set(filenames, images, type, bottom_threshold=500, top_threshold=9999999):
     imin = -1
     imax = 0
 
@@ -68,8 +69,8 @@ def process_image_set(filenames, images, type, top_threshold=4.9, bottom_thresho
 
     for i in range(0, len(filenames)):
         print 'Processing %s...' % filenames[i]
-        images[i].thumbnail((80, 80))
-        score = complexity_score(images[i])
+        img = images[i].resize((80, 80))
+        score = complexity_score(img)
 
         interesting = score<top_threshold and score>bottom_threshold
 
@@ -97,16 +98,16 @@ def process_image_set(filenames, images, type, top_threshold=4.9, bottom_thresho
     return stats
 
 
-def main():
-    interesting_filenames = os.listdir("test_images/interesting")
-    uninteresting_filenames = os.listdir("test_images/uninteresting")
+def main(root="test_images"):
+    interesting_filenames = os.listdir("%s/interesting" % root)
+    uninteresting_filenames = os.listdir("%s/uninteresting" % root)
 
     interesting_images = []
     for name in interesting_filenames:
-        interesting_images.append(Image.open("test_images/interesting/%s" % name))
+        interesting_images.append(Image.open("%s/interesting/%s" % (root, name)))
     uninteresting_images = []
     for name in uninteresting_filenames:
-        uninteresting_images.append(Image.open("test_images/uninteresting/%s" % name))
+        uninteresting_images.append(Image.open("%s/uninteresting/%s" % (root, name)))
 
     interesting_stats = process_image_set(interesting_filenames, interesting_images, 'interesting')
     print '----'
@@ -118,10 +119,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
-    # img = Image.open("test_images/uninteresting/monochrome_rand_591.jpg")
-    # img.thumbnail((80,80))
-    # filtered = img.filter(ImageFilter.BLUR)
-    # filtered.save("test.jpg")
-    # print complexity_score(img)
-    # print complexity_score(filtered)
+    main(root="test_images")
