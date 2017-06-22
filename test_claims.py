@@ -17,6 +17,5 @@ print 'public', key_to_string(key.publickey())
 print 'data', data
 print 'signature', encode(signature)
 
-print encode(signature)
-
-print key.verify(data+'asdf',(decode(encode(signature),type='long'),None))
+print 'verification', key.verify(data,(decode(encode(signature),type='long'),None))
+print 'tampering', key.verify(data+'asdf',(decode(encode(signature),type='long'),None))
