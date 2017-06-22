@@ -45,7 +45,7 @@ class Block:
         return self.nonce
 
     def get_nonce_encoded(self):
-        return encode_32(self.nonce)
+        return encode(self.nonce)
 
     def get_hash(self):
         return self.hash
