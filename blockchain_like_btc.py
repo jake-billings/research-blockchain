@@ -2,20 +2,16 @@ import hashlib
 import os
 import math
 
-from encode import encode, decode, encode_32, decode_32
+from encode import encode, decode
 
 HASH_ALGORITHM = 'sha512'
 HASHER = hashlib.new(HASH_ALGORITHM)
 
 NONCE_SIZE = 8
 
-DIFFICULTY_ORDER = 4
-ENCODING_ORDER = 32
-DIFFICULTY = math.pow(ENCODING_ORDER, DIFFICULTY_ORDER)
-
-DIFFICULTY_PHRASE = 'dankmemes'
-for i in range(len(DIFFICULTY_PHRASE),len(encode(HASHER.digest()))):
-    DIFFICULTY_PHRASE += '0'
+DIFFICULTY_ORDER = 3
+ENCODING_ORDER = 64
+DIFFICULTY = math.pow(64, DIFFICULTY_ORDER)
 
 
 class Block:
@@ -45,13 +41,13 @@ class Block:
         return self.nonce
 
     def get_nonce_encoded(self):
-        return encode_32(self.nonce)
+        return encode(self.nonce)
 
     def get_hash(self):
         return self.hash
 
     def get_hash_encoded(self):
-        return encode_32(self.get_hash())
+        return encode(self.get_hash())
 
     def get_height(self):
         return self.height
@@ -72,7 +68,7 @@ def mine_block(previous, data, difficulty_phrase='0'):
 
         valid = True
         for i in range(0, DIFFICULTY_ORDER):
-            if hash[i+5] is not DIFFICULTY_PHRASE[i]:
+            if hash[i] is not '0':
                 valid = False
                 break
 
