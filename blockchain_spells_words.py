@@ -9,17 +9,13 @@ HASHER = hashlib.new(HASH_ALGORITHM)
 
 NONCE_SIZE = 8
 
-DIFFICULTY_ORDER = 1
+DIFFICULTY_ORDER = 4
 ENCODING_ORDER = 32
 DIFFICULTY = math.pow(ENCODING_ORDER, DIFFICULTY_ORDER)
 
 DIFFICULTY_PHRASE = 'dankmemes'
 for i in range(len(DIFFICULTY_PHRASE),len(encode(HASHER.digest()))):
     DIFFICULTY_PHRASE += '0'
-
-def hash_block(previous_hash, data, nonce):
-        HASHER.update(previous_hash + data + nonce)
-        return HASHER.digest()
 
 
 class Block:
@@ -31,8 +27,8 @@ class Block:
         previous_hash = ''
         if self.previous is not None:
             previous_hash = self.previous.get_hash()
-
-        self.hash = hash_block(previous_hash,self.data,self.nonce)
+        HASHER.update(previous_hash + self.data + self.nonce)
+        self.hash = HASHER.digest()
 
         if self.previous is None:
             self.height = 0
@@ -69,16 +65,10 @@ class Block:
                % (self.get_height(), self.get_nonce_encoded(), previous_hash, self.get_data(), self.get_hash_encoded())
 
 
-def mine_block(previous, data, nonce_source):
+def mine_block(previous, data, difficulty_phrase='0'):
     while True:
-        nonce = nonce_source.provide_nonce()
-
-        print "trying nonce %s" % encode(nonce)
-
-        b = Block(previous, data, nonce)
+        b = Block(previous, data, os.urandom(NONCE_SIZE))
         hash = b.get_hash_encoded()
-
-        print "got hash %s" % hash
 
         valid = True
         for i in range(0, DIFFICULTY_ORDER):
