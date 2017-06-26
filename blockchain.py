@@ -1,5 +1,5 @@
 import hashlib
-import os
+import images
 import math
 
 from encode import encode, decode, encode_32, decode_32
@@ -23,24 +23,21 @@ def hash_block(previous_hash, data, nonce):
 
 
 class Block:
-    def __init__(self, previous, data, nonce):
-        self.previous = previous
+    def __init__(self, previous_hash, height, data, nonce, reward_address):
+        self.previous_hash = previous_hash
         self.data = data
         self.nonce = nonce
+        self.height = height
 
-        previous_hash = ''
-        if self.previous is not None:
-            previous_hash = self.previous.get_hash()
+        self.hash = hash_block(self.previous_hash,self.data,self.nonce)
 
-        self.hash = hash_block(previous_hash,self.data,self.nonce)
+        self.reward_address = reward_address
 
-        if self.previous is None:
-            self.height = 0
-        else:
-            self.height = self.previous.get_height() + 1
+    def get_previous_hash(self):
+        return self.previous_hash
 
-    def get_previous(self):
-        return self.previous
+    def get_previous_hash_encoded(self):
+        return encode_32(self.previous_hash)
 
     def get_data(self):
         return self.data
@@ -60,25 +57,28 @@ class Block:
     def get_height(self):
         return self.height
 
+    def get_reward_address(self):
+        return self.reward_address
+
+    def is_valid(self):
+        if self.hash != hash_block(self.get_previous_hash(), self.data, self.nonce):
+            return False
+
     def get_string(self):
-        previous_hash = 'None'
-        prev = self.get_previous()
-        if prev is not None:
-            previous_hash = prev.get_hash_encoded()
-        return '----------block %s----------\nnonce %s\nprev %s\ndata\n----------\n%s\n----------\nhash %s\n----------End Block----------'\
-               % (self.get_height(), self.get_nonce_encoded(), previous_hash, self.get_data(), self.get_hash_encoded())
+        return '----------block %s----------\nnonce %s\nprev %s\nreward_address %s\n---data---\n%s\n----------\nhash %s\n----------End Block----------'\
+               % (self.get_height(), self.get_nonce_encoded(), self.get_previous_hash_encoded(), self.get_reward_address(), self.get_data(), self.get_hash_encoded())
 
 
-def mine_block(previous, data, nonce_source):
+def mine_block(previous_hash, height, data, nonce_source, reward_address):
     while True:
         nonce = nonce_source.provide_nonce()
 
-        print "trying nonce %s" % encode(nonce)
+        # print "trying nonce %s" % encode(nonce)
 
-        b = Block(previous, data, nonce)
+        b = Block(previous_hash, height, data, nonce, reward_address)
         hash = b.get_hash_encoded()
 
-        print "got hash %s" % hash
+        # print "got hash %s" % hash
 
         valid = True
         for i in range(0, DIFFICULTY_ORDER):
