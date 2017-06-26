@@ -1,6 +1,9 @@
 import os
 from encode import encode, decode
 from Crypto.PublicKey import RSA
+import hashlib
+
+HASHER = hashlib.new('sha224')
 
 KEY_SIZE = 1024
 ENTROPY = os.urandom
@@ -19,4 +22,9 @@ def sign(key, data):
 
 
 def verify(key, signature, data):
-    return key.verify(data,(decode(encode(signature), type='long'),None))
+    return key.verify(data,(decode(encode(signature), type='long'), None))
+
+
+def public_key_to_address(key):
+    HASHER.update(key.exportKey(format="DER"))
+    return encode(HASHER.digest())

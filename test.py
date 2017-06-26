@@ -8,9 +8,13 @@ print 'Mining difficulty: %s:%s' % (blockchain.DIFFICULTY_ORDER, blockchain.DIFF
 
 nonce_source = nonce_source.NonceSource('nonce_sources')
 
-chain = [blockchain.mine_block(None, 'genesis', nonce_source)]
-
 key = signature.generate_key()
+address = signature.public_key_to_address(key.publickey())
+
+print address
+
+chain = [blockchain.mine_block('', 0, 'genesis', nonce_source, address)]
+
 
 print chain[0].get_string()
 
@@ -25,7 +29,7 @@ for i in range(1, 100):
     for t in transactions:
         block_data += t.get_string()+'\n'
 
-    b = blockchain.mine_block(chain[i-1], block_data, nonce_source)
+    b = blockchain.mine_block(chain[i-1].get_hash(), i, block_data, nonce_source, address)
     chain.append(b)
 
     print b.get_string()
