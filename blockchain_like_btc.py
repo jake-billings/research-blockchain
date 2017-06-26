@@ -98,7 +98,7 @@ class Block:
 # data must be a string
 # difficulty_order must be an integer that refers to the number of leading zeros required in a block's hash
 def mine_block(previous, data, difficulty_order=DIFFICULTY_ORDER):
-    # Loop until a block is found. This algorithm could take an arbitratily long amount of time
+    # Loop until a block is found. This algorithm could take an arbitrarily long amount of time
     while True:
         # Generate a block based on the previous and the provided data with a random nonce
         b = Block(previous, data, os.urandom(NONCE_SIZE))
