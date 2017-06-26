@@ -1,21 +1,22 @@
-import os
 from encode import encode,decode
-import Crypto.PublicKey.RSA as RSA
+import signature
 
+# This is the test data to sign
 data = 'test signed data'
 
+# Generate a PyCrypto RSA key using signature module
+key = signature.generate_key()
 
-def key_to_string(key):
-    return encode(key.exportKey(format="DER"))
+# Sign the test data with the key
+sig = signature.sign(key, data)
 
-key = RSA.generate(1024, os.urandom)
-
-signature = key.sign(data, '')[0]
-
-print 'private', key_to_string(key)
-print 'public', key_to_string(key.publickey())
+# Dump encoded versions of the keys and data to the console
+print 'private', signature.key_to_string(key)
+print 'public', signature.key_to_string(key.publickey())
+print 'address', signature.public_key_to_address(key.publickey())
 print 'data', data
-print 'signature', encode(signature)
+print 'signature', sig, '\n'
 
-print 'verification', key.verify(data,(decode(encode(signature),type='long'),None))
-print 'tampering', key.verify(data+'asdf',(decode(encode(signature),type='long'),None))
+# Test verification code
+print 'call to verify() with legit data\t\t\t%s\t(Should be True)' % signature.verify(key, sig, data)
+print 'call of verify() with tampered data\t\t\t%s\t(Should be False)' % key.verify(data+'asdf',(decode(encode(sig),type='long'),None))

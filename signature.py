@@ -1,5 +1,5 @@
 import os
-from encode import encode
+from encode import encode, decode
 from Crypto.PublicKey import RSA
 import hashlib
 
@@ -50,15 +50,15 @@ def sign(key, data):
 #
 #
 # key must be a PyCrypto key
-# signature must be signature of the data
+# signature must be base64 encoded signature of the data from the encode module
 # data must be the string supposedly signed
 def verify(key, signature, data):
-    return key.verify(data, signature, None)
+    return key.verify(data, (decode(signature, type='long'), None))
 
 
 # Converts a PyCrypto key to an address
 #
-# Addresses are defined as the sha224 hash of a public key enocoded with base64
+# Addresses are defined as the sha224 hash of a public key encoded with base64
 # using the encode module.
 #
 # key must be a PyCrypto key
