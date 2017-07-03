@@ -5,15 +5,6 @@ import os
 import numpy as np
 
 
-# https://stackoverflow.com/questions/1927660/compare-two-images-the-python-linux-way
-def rmsdiff(ha, hb):
-    h1 = ha.histogram()
-    h2 = hb.histogram()
-
-    return math.sqrt(reduce(operator.add,
-                            map(lambda a, b: (a - b) ** 2, h1, h2)) / len(h1))
-
-
 # https://www.hdm-stuttgart.de/~maucher/Python/MMCodecs/html/basicFunctions.html
 def entropy(signal):
     lensig = signal.size
