@@ -10,7 +10,7 @@ import base64
 # 32 in hex. This aids debugging of encoded strings.
 
 
-# Enocodes input data as base64 and prepends it with "0x40_". "0x40" is 64 in hex and is used to determines the
+# Encodes input data as base64 and prepends it with "0x40_". "0x40" is 64 in hex and is used to determines the
 # difference between base32 encoded strings and base64 encoded strings in debugging.
 # data must be the binary data to be encoded
 def encode(data):
@@ -40,7 +40,7 @@ def decode(data, type='string'):
     return data
 
 
-# Enocodes input data as base64 and prepends it with "0x20_". "0x20" is 32 in hex and is used to determines the
+# Encodes input data as base64 and prepends it with "0x20_". "0x20" is 32 in hex and is used to determines the
 # difference between base32 encoded strings and base64 encoded strings in debugging.
 def encode_32(data):
     # Pack integers as a byte string
