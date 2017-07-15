@@ -6,7 +6,7 @@ sys_random = random.SystemRandom()
 
 from PIL import Image
 
-from ignore.temp import images
+import images
 import cStringIO
 
 
