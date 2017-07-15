@@ -1,4 +1,7 @@
 # research-blockchain #
+
+[![DOI](https://zenodo.org/badge/95069337.svg)](https://zenodo.org/badge/latestdoi/95069337)
+
 This repository contains my research into the technologies surrounding blockchain technology and cryptocurrencies such as Ethereum and Bitcoin.
 
 ### Blockchain like Bitcoin ###
