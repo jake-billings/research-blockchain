@@ -2,7 +2,9 @@
 
 [![DOI](https://zenodo.org/badge/95069337.svg)](https://zenodo.org/badge/latestdoi/95069337)
 
-This repository contains my research into the technologies surrounding blockchain technology and cryptocurrencies such as Ethereum and Bitcoin.
+This repository contains my research into the technologies surrounding blockchain technology and cryptocurrencies such as Ethereum and Bitcoin that is published in the paper Image-based Proof of Work Algorithm for the Incentivization of Blockchain Archival of Interesting Images.
+
+[Click Here to Read the Full Paper](https://arxiv.org/abs/1707.04558)
 
 ### Blockchain like Bitcoin ###
 The files `blockchain_like_btc.py` and `test_mining_like_btc.py` test a blockchain that was built with a simplified version of the algorithm used by Bitcoin.
